@@ -5,7 +5,8 @@ from functions.text_node_to_html_node import text_node_to_html_node
 from functions.split_nodes_delimiter import split_nodes_delimiter
 from functions.extract_markdown_regex import extract_markdown_images, extract_markdown_links
 from functions.split_images_and_links import split_nodes_images, split_nodes_links
-
+from functions.text_to_texnodes import text_to_textnodes
+from functions.markdown_to_blocks import markdown_to_blocks
 
 
 class TestTextNode(unittest.TestCase):
@@ -84,8 +85,8 @@ class TestTextNode(unittest.TestCase):
 
 
     def test_split_nodes_basic_italic(self):
-        node = TextNode("This is _italic_ text", TextType.TEXT)
-        new_nodes = split_nodes_delimiter([node], "_", TextType.ITALIC)
+        node = TextNode("This is *italic* text", TextType.TEXT)
+        new_nodes = split_nodes_delimiter([node], "*", TextType.ITALIC)
         self.assertEqual(len(new_nodes), 3)
         self.assertEqual(new_nodes[0], TextNode("This is ", TextType.TEXT))
         self.assertEqual(new_nodes[1], TextNode("italic", TextType.ITALIC))
@@ -266,5 +267,85 @@ class TestTextNode(unittest.TestCase):
             ],
             new_nodes,
         )
+
+
+
+#Text to TextNodes tests
+    def test_text_to_textnodes(self):
+        text = "This is **bold** text with an ![image](http://image.com) and a [link](http://link.com) and `code`."
+        nodes = text_to_textnodes(text)
+        expected_nodes = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("bold", TextType.BOLD),
+            TextNode(" text with an ", TextType.TEXT),
+            TextNode("image", TextType.IMAGE, "http://image.com"),
+            TextNode(" and a ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "http://link.com"),
+            TextNode(" and ", TextType.TEXT),
+            TextNode("code", TextType.CODE),
+            TextNode(".", TextType.TEXT),
+        ]
+        self.assertEqual(nodes, expected_nodes)
+
+
+    def test_text_to_textnodes_double_formatting(self):
+        text = "This is **bold** and *italic* text."
+        nodes = text_to_textnodes(text)
+        expected_nodes = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("bold", TextType.BOLD),
+            TextNode(" and ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" text.", TextType.TEXT),
+        ]
+        self.assertEqual(nodes, expected_nodes)
+
+
+    def test_text_to_textnodes_image_link(self):
+        text = "Here is an ![image](http://image.com) and a [link](http://link.com)."
+        nodes = text_to_textnodes(text)
+        expected_nodes = [
+            TextNode("Here is an ", TextType.TEXT),
+            TextNode("image", TextType.IMAGE, "http://image.com"),
+            TextNode(" and a ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "http://link.com"),
+            TextNode(".", TextType.TEXT),
+        ]
+        self.assertEqual(nodes, expected_nodes)
+
+
+
+
+#Markdown to blocks tests / Careful with identation of tests here
+    def test_markdown_to_blocks(self):
+        md = """
+This is **bolded** paragraph
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+- This is a list
+- with items
+"""
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(
+            blocks,
+            [
+                "This is **bolded** paragraph",
+                "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
+                "- This is a list\n- with items",
+            ],
+        )
+
+    def test_markdown_to_blocks_empty(self):
+        md = "\n\n"
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(blocks, [])
+
+    def test_markdown_to_ones_single_block(self):
+        md = "This is a single block of text without any double newlines."
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(blocks, ["This is a single block of text without any double newlines."])
+
 if __name__ == "__main__":
     unittest.main()
