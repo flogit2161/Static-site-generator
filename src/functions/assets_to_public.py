@@ -2,7 +2,7 @@ import os
 import shutil
 
 def assets_to_public():
-    destination = "public"
+    destination = "docs"
     source = "assets"
     if os.path.exists(destination):
         shutil.rmtree(destination)
