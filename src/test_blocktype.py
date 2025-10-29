@@ -3,6 +3,7 @@ from blocktype import BlockType
 from functions.block_to_block_type import block_to_block_type
 from functions.markdown_to_blocks import markdown_to_blocks
 from functions.markdown_to_html_node import markdown_to_html_node
+from functions.extract_title import extract_title
 
 
 
@@ -70,7 +71,7 @@ This is the same paragraph on a new line
 
 
 
-# Markdown to HTMLNode tests
+# Markdown blocks to HTMLNode tests
         def test_paragraphs(self):
                 md = """
 This is **bolded** paragraph
@@ -142,3 +143,24 @@ the **same** even with inline stuff
                 html,
                 "<div><h1>This is a Heading 1</h1><h2>This is a Heading 2</h2></div>",
         )
+                
+#Extract title tests
+
+        def test_extract_title(self):
+                md= """
+# My Document Title
+
+## Random text"""
+
+                title = extract_title(md)
+                self.assertEqual(title, "My Document Title")
+
+        def test_extract_title_more_text(self):
+                md= """
+Some introduction text.
+# Another Title Here
+```python
+print("Hello, World!")
+```"""
+                title = extract_title(md)
+                self.assertEqual(title, "Another Title Here")
