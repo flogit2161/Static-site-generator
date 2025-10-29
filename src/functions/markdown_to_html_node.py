@@ -30,7 +30,7 @@ def markdown_to_html_node(markdown):
 
         #CODE BLOCK
         elif block_type == BlockType.CODE:
-            lines = block.splitlines(True)          
+            lines = block.splitlines(True) # Keep line endings / could use split("\n")          
             inner = "".join(lines[1:-1])             
             code_leaf = LeafNode(tag="code", value=inner)
             code_node = ParentNode(tag="pre", children=[code_leaf])
@@ -59,6 +59,7 @@ def markdown_to_html_node(markdown):
 
 
 
+#HELPER FUNCTIONS
 
 def text_to_children(text):
     text_nodes = text_to_textnodes(text)
@@ -69,14 +70,13 @@ def text_to_children(text):
     return children
 
 def build_heading(block):
-    stripped = block.strip()
     i = 0
-    while i < len(stripped) and stripped[i] == "#":
+    while i < len(block) and block[i] == "#":
         i += 1
     count = i
-    if not (1 <= count <= 6 and i < len(stripped) and stripped[i] == " "):
+    if not (1 <= count <= 6 and i < len(block) and block[i] == " "):
         raise ValueError("invalid heading block")
-    text = stripped[i+1:].strip()
+    text = block[i+1:].strip()
     children = text_to_children(text)
     return ParentNode(tag=f"h{count}", children=children)
 

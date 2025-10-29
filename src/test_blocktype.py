@@ -116,3 +116,29 @@ the **same** even with inline stuff
                 html,
             "<div><ul><li>Item 1</li><li>Item 2 with <b>bold</b></li><li>Item 3 with <i>italic</i></li></ul></div>",
         )
+                
+        def test_ordered_list(self):
+                md = """
+1. First item
+2. Second item with `code`
+3. Third item
+"""
+                node = markdown_to_html_node(md)
+                html = node.to_html()
+                self.assertEqual(
+                html,
+                "<div><ol><li>First item</li><li>Second item with <code>code</code></li><li>Third item</li></ol></div>",
+        )
+        
+        def test_heading(self):
+                md = """
+# This is a Heading 1
+
+## This is a Heading 2
+"""
+                node = markdown_to_html_node(md)
+                html = node.to_html()
+                self.assertEqual(
+                html,
+                "<div><h1>This is a Heading 1</h1><h2>This is a Heading 2</h2></div>",
+        )

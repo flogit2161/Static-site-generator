@@ -13,8 +13,7 @@ def split_nodes_images(old_nodes):
             continue
         image = extract_markdown_images(node.text)
         if not image:
-            new_nodes.append(node)
-            print("no image found, returning original text")
+            new_nodes.append(node)  
             continue
         #AI Code from here 
         after = node.text
@@ -38,7 +37,6 @@ def split_nodes_links(old_nodes):
         links = extract_markdown_links(node.text)
         if not links:
             new_nodes.append(node)
-            print("no link found, returning original text")
             continue
         #Same AI Code
         after = node.text
