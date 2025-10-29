@@ -1,8 +1,8 @@
-from textnode import TextNode, TextType
+from functions.assets_to_public import assets_to_public
 
 def main():
-    dummynode = TextNode("This is some anchor text", TextType.LINK, "http://example.com")
-    print(dummynode)
+    assets_to_public()
+    
 
 if __name__ == "__main__":
     main()  
