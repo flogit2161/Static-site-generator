@@ -74,7 +74,7 @@ def build_heading(block):
     while i < len(stripped) and stripped[i] == "#":
         i += 1
     count = i
-    if not (1 <= count <= 6 and i < len(s) and s[i] == " "):
+    if not (1 <= count <= 6 and i < len(stripped) and stripped[i] == " "):
         raise ValueError("invalid heading block")
     text = stripped[i+1:].strip()
     children = text_to_children(text)
