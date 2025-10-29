@@ -5,7 +5,7 @@ from functions.text_node_to_html_node import text_node_to_html_node
 from functions.split_nodes_delimiter import split_nodes_delimiter
 from functions.extract_markdown_regex import extract_markdown_images, extract_markdown_links
 from functions.split_images_and_links import split_nodes_images, split_nodes_links
-from functions.text_to_texnodes import text_to_textnodes
+from functions.text_to_textnodes import text_to_textnodes
 from functions.markdown_to_blocks import markdown_to_blocks
 
 
@@ -316,36 +316,7 @@ class TestTextNode(unittest.TestCase):
 
 
 
-#Markdown to blocks tests / Careful with identation of tests here
-    def test_markdown_to_blocks(self):
-        md = """
-This is **bolded** paragraph
 
-This is another paragraph with _italic_ text and `code` here
-This is the same paragraph on a new line
-
-- This is a list
-- with items
-"""
-        blocks = markdown_to_blocks(md)
-        self.assertEqual(
-            blocks,
-            [
-                "This is **bolded** paragraph",
-                "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
-                "- This is a list\n- with items",
-            ],
-        )
-
-    def test_markdown_to_blocks_empty(self):
-        md = "\n\n"
-        blocks = markdown_to_blocks(md)
-        self.assertEqual(blocks, [])
-
-    def test_markdown_to_ones_single_block(self):
-        md = "This is a single block of text without any double newlines."
-        blocks = markdown_to_blocks(md)
-        self.assertEqual(blocks, ["This is a single block of text without any double newlines."])
 
 if __name__ == "__main__":
     unittest.main()

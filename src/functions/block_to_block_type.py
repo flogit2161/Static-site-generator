@@ -2,33 +2,27 @@ from blocktype import BlockType
 
 
 def block_to_block_type(block):
-    i = 0 
-    while i < len(block) and block[i] == '#':
-        i += 1
-    count = i
-    if 1 <= count <= 6 and i < len(block) and block[i] == ' ':
+    lines = block.split("\n")
+
+    if block.startswith(("# ", "## ", "### ", "#### ", "##### ", "###### ")):
         return BlockType.HEADING
-
-    if block.startswith("```") and block.endswith("```"):
+    if len(lines) > 1 and lines[0].startswith("```") and lines[-1].startswith("```"):
         return BlockType.CODE
-    
-    split_block = block.splitlines()
-
-    for line in split_block:
-        if not line.startswith(">"):
-            return BlockType.PARAGRAPH
+    if block.startswith(">"):
+        for line in lines:
+            if not line.startswith(">"):
+                return BlockType.PARAGRAPH
         return BlockType.QUOTE
-    
-    for line in split_block:
-        if not line.startswith("- "):
-            return BlockType.PARAGRAPH
+    if block.startswith("- "):
+        for line in lines:
+            if not line.startswith("- "):
+                return BlockType.PARAGRAPH
         return BlockType.UNORDERED_LIST
-        
-    expected_number = 1    
-    for line in split_block:
-        if not line.startswith(f"{expected_number}. "):
-            return BlockType.PARAGRAPH
-        expected_number += 1
+    if block.startswith("1. "):
+        i = 1
+        for line in lines:
+            if not line.startswith(f"{i}. "):
+                return BlockType.PARAGRAPH
+            i += 1
         return BlockType.ORDERED_LIST
     return BlockType.PARAGRAPH
-    
